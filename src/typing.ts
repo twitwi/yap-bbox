@@ -14,3 +14,16 @@ export type Activity = {
   color: string
 }
 
+
+export const DUMMY_LOG: Log = {
+  activity: '___dummy',
+  comment: 'dummy',
+  start: Date.now(),
+  end: [Date.now()],
+}
+export const DUMMY_ACTIVITY: Activity = {
+  id: '___dummy',
+  name: 'dummy',
+  description: 'dummy',
+  color: '#FF00FF',
+}
