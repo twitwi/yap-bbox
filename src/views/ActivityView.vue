@@ -25,7 +25,7 @@ const promptChangeId = () => {
 </script>
 
 <template>
-  <button @click="router.push({ name: 'activities' })">Back</button>
+  <button @click="router.go(-1)">Back</button>
 
   <template v-if="activity">
     <h3>Activity: {{ activity.name }} <span @click="promptChangeId()">{{ activity.id }}</span></h3>

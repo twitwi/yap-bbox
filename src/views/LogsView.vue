@@ -12,66 +12,33 @@ function showTime(t) {
   return new Date(t).toISOString().substring(11, 19)
 }
 
-const lastLog = computed(() => {
-  const logs = main.logs
-  if (logs.length === 0) return DUMMY_LOG
-  return logs[logs.length - 1]
-})
-const lastActivity = computed(() => {
-  const logs = main.logs
-  if (logs.length === 0) return DUMMY_ACTIVITY
-  return main.activities.find((a) => a.id === logs[logs.length - 1].activity) || DUMMY_ACTIVITY
-})
-const lastLogTime = computed(() => {
-  const log = lastLog.value
-  if (log.end.length === 0) {
-    const live = now.value.getTime() - log.start
-    return showTime(live)
-  }
-  const duration = Math.min(...log.end) - log.start
-  return showTime(duration)
-})
-const beforeLastLog = computed(() => {
-  const logs = main.logs
-  if (logs.length < 2) return DUMMY_LOG
-  return logs[logs.length - 2]
-})
-const beforeLastActivity = computed(() => {
-  const logs = main.logs
-  if (logs.length < 2) return DUMMY_ACTIVITY
-  return main.activities.find((a) => a.id === logs[logs.length - 2].activity) || DUMMY_ACTIVITY
-})
-const beforeLastLogTime = computed(() => {
-  const log = beforeLastLog.value
-  if (log.end.length === 0) {
-    const live = now.value.getTime() - log.start
-    return showTime(live)
-  }
-  const duration = Math.min(...log.end) - log.start
-  return showTime(duration)
-})
+function useLast(n: number) {
+  return computed(() => {
+    const logs = main.logs
+    const log = logs[logs.length + n] ?? DUMMY_LOG
+    const activity = main.activities.find((a) => a.id === log.activity) ?? DUMMY_ACTIVITY
+    const time = log.end.length === 0 ? now.value.getTime() - log.start : Math.min(...log.end) - log.start
+    const clickIt = () => {
+      if (log.end.length == 0) {
+        log.end.push(Date.now() - 500)
+      } else {
+        clickActivity(activity)
+      }
+    }
+    return { log, activity, time, clickIt }
+  })
+}
 
-function clickLastLog() {
-  if (lastLog.value.end.length == 0) {
-    lastLog.value.end.push(Date.now() - 500)
-  } else {
-    clickActivity(lastActivity.value)
-  }
-}
-function clickBeforeLastLog() {
-  if (beforeLastLog.value.end.length == 0) {
-    beforeLastLog.value.end.push(Date.now() - 500)
-  } else {
-    clickActivity(beforeLastActivity.value)
-  }
-}
+const last = useLast(-1)
+const beforeLast = useLast(-2)
+
 function edit(log: Log) {
   router.push({ name: 'log', params: { logIndex: main.logs.indexOf(log) } })
 }
 
 function clickActivity(a: Activity) {
-  if (lastLog.value.end.length == 0) {
-    lastLog.value.end.push(Date.now() - 500)
+  if (last.value.log.end.length == 0) {
+    last.value.log.end.push(Date.now() - 500)
   }
   const newLog: Log = {
     activity: a.id,
@@ -86,22 +53,22 @@ function clickActivity(a: Activity) {
 <template>
   <h3>Logging</h3>
 
-  <div :class="{log:true, 'last-log': true, running: lastLog.end.length == 0}" :style="{ ['--col']: lastActivity.color }">
-    <div class="time" @click="clickLastLog()">{{ lastLogTime }}</div>
+  <div :class="{log:true, 'last-log': true, running: last.log.end.length == 0}" :style="{ ['--col']: last.activity.color }">
+    <div class="time" @click="last.clickIt()">{{ showTime(last.time) }}</div>
     <div class="activity">
-      <div class="name">{{ lastActivity.name }}</div>
-      <div class="comment">{{ lastLog.comment }}</div>
+      <div class="name">{{ last.activity.name }}</div>
+      <div class="comment">{{ last.log.comment }}</div>
     </div>
-    <div class="edit" @click="edit(lastLog)">edit</div>
+    <div class="edit" @click="edit(last.log)">edit</div>
   </div>
 
-  <div :class="{log:true, 'beforelast-log': true, running: beforeLastLog.end.length == 0}" :style="{ ['--col']: beforeLastActivity.color }">
-    <div class="time" @click="clickBeforeLastLog()">{{ beforeLastLogTime }}</div>
+  <div :class="{log:true, 'beforelast-log': true, running: beforeLast.log.end.length == 0}" :style="{ ['--col']: beforeLast.activity.color }">
+    <div class="time" @click="beforeLast.clickIt()">{{ showTime(beforeLast.time) }}</div>
     <div class="activity">
-      <div class="name">{{ beforeLastActivity.name }}</div>
-      <div class="comment">{{ beforeLastLog.comment }}</div>
+      <div class="name">{{ beforeLast.activity.name }}</div>
+      <div class="comment">{{ beforeLast.log.comment }}</div>
     </div>
-    <div class="edit" @click="edit(beforeLastLog)">edit</div>
+    <div class="edit" @click="edit(beforeLast.log)">edit</div>
   </div>
 
   <div class="pick-activities">
@@ -149,6 +116,7 @@ function clickActivity(a: Activity) {
     }
     .comment {
       color: #f99;
+      margin: 0 .5em;
     }
   }
   .edit {

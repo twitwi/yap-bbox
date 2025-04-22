@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import ActivitiesView from '@/views/ActivitiesView.vue'
 import ActivityView from '@/views/ActivityView.vue'
 import LogsView from '@/views/LogsView.vue'
+import LogView from '@/views/LogView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -10,6 +11,12 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: LogsView,
+    },
+    {
+      path: '/l/:logIndex',
+      name: 'log',
+      component: LogView,
+      props: true,
     },
     {
       path: '/a',
