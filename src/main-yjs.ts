@@ -4,7 +4,8 @@ import { createPiniaYJSPlugin } from 'pinia-plugin-yjs'
 import { IndexeddbPersistence } from 'y-indexeddb'
 import type { Pinia } from 'pinia'
 
-export function getOrAskConfig(LOCAL_STORAGE_KEY = 'yjsapp-bboxy', saveToLocalStorage = true) {
+export const APP_LOCAL_STORAGE_KEY = 'yjsapp-bboxy'
+export function getOrAskConfig(LOCAL_STORAGE_KEY = APP_LOCAL_STORAGE_KEY, saveToLocalStorage = true) {
   const ASK = Symbol('ask')
 
   let config: symbol | (string | symbol)[] = ASK
