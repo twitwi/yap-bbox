@@ -3,7 +3,7 @@ import { NButton, NDatePicker, NForm, NFormItem, NInput, NSelect } from 'naive-u
 
 const props = defineProps({
   logIndex: {
-    type: Number,
+    type: String,
     required: true,
   },
 })
@@ -14,7 +14,7 @@ import { computed } from 'vue'
 import { DUMMY_ACTIVITY } from '@/typing'
 const main = useMainStore()
 const log = computed(() => {
-  return main.logs[props.logIndex]
+  return main.logs[parseInt(props.logIndex)]
 })
 const activity = computed(() => {
   return main.activities.find((a) => a.id === log.value.activity) ?? DUMMY_ACTIVITY
@@ -31,7 +31,7 @@ const activityOptions = computed(() => {
 function promptConfirmDelete() {
   const confirm = window.confirm('Are you sure you want to delete this log?')
   if (confirm) {
-    main.logs.splice(props.logIndex, 1)
+    main.logs.splice(parseInt(props.logIndex), 1)
     router.go(-1)
   }
 }
@@ -56,7 +56,7 @@ function promptConfirmDelete() {
         <NButton v-else @click="log.end.splice(0, log.end.length)" type="error" tertiary>clear end(s)</NButton>
       </NFormItem>
       <NFormItem label="Comment">
-        <NInput type="text" v-model="log.comment" placeholder="Comment" />
+        <NInput type="text" @change="router.go(-1)" v-model:value="log.comment" placeholder="Comment" />
       </NFormItem>
     </NForm>
     <NButton @click="promptConfirmDelete" type="error">Delete</NButton>

@@ -1,23 +1,33 @@
 <script setup lang="ts">
 import router from '@/router'
 import { useMainStore } from '@/stores/simple'
+import { logDuration, showTime } from '@/tools'
 import { DUMMY_ACTIVITY, DUMMY_LOG, type Activity, type Log } from '@/typing'
 import { useNow } from '@vueuse/core'
-import { computed } from 'vue'
+import { NSwitch } from 'naive-ui'
+import { computed, ref } from 'vue'
 const main = useMainStore()
 
 const now = useNow({ interval: 500 })
 
-function showTime(t: number) {
-  return new Date(t).toISOString().substring(11, 19)
-}
+const showLogs = ref(false)
+
+const logs = computed(() => {
+  const aMap = main.activities.reduce((acc, a) => {
+    acc[a.id] = a
+    return acc
+  }, {} as Record<string, Activity>)
+  return main.logs.map((l) => {
+    return { ...l, original: l, act: aMap[l.activity] }
+  }).reverse()
+})
 
 function useLast(n: number) {
   return computed(() => {
     const logs = main.logs
     const log = logs[logs.length + n] ?? DUMMY_LOG
     const activity = main.activities.find((a) => a.id === log.activity) ?? DUMMY_ACTIVITY
-    const time = log.end.length === 0 ? now.value.getTime() - log.start : Math.min(...log.end) - log.start
+    const time = logDuration(log, now.value.getTime())
     const clickIt = () => {
       if (log.end.length == 0) {
         log.end.push(Date.now() - 500)
@@ -79,10 +89,25 @@ function clickActivity(a: Activity) {
     </div>
   </div>
 
-  <pre>{{ JSON.stringify(main.logs.slice(0, 10), null, 2) }}</pre>
+  <h3><NSwitch v-model:value="showLogs"></NSwitch><label><input type="checkbox" v-model="showLogs" style="display: none">  All Logs (unpaginated!)</label></h3>
+  <div v-if="showLogs" class="all-logs beforelast-log">
+    <div v-for="log in logs" :key="log.start" class="log"
+    :style="{ ['--col']: log.act.color }"
+    @click="router.push({ name: 'log', params: { logIndex: main.logs.indexOf(log.original) } })">
+      <div class="time">{{ showTime(logDuration(log)) }}</div>
+      <div class="activity">
+        <div class="name">{{ log.act.name }}</div>
+        <div class="comment">{{ log.comment }}</div>
+      </div>
+      <div class="edit" @click.stop="edit(log)">edit</div>
+    </div>
+  </div>
 </template>
 
 <style>
+.all-logs {
+  font-size: .75em;
+}
 .log {
   background: lightgrey;
   .time {
