@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import router from '@/router'
 import { useMainStore } from '@/stores/simple'
 const main = useMainStore()
 
@@ -28,7 +29,8 @@ function addActivity() {
   <h3>Activites</h3>
 
   <div class="activities">
-    <div v-for="a in main.activities" :key="a.id" class="activity" :style="{ ['--col']: a.color }">
+    <div v-for="a in main.activities" :key="a.id" class="activity"
+    :style="{ ['--col']: a.color }" @click="router.push({ name: 'activity', params: { activityId: a.id } })">
       <h4>{{ a.name }}</h4>
       <p>{{ a.description }}</p>
     </div>
