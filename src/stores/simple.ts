@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import type { Data } from '@/typing'
+import type { Activity, Log } from '@/typing'
 
 export const useLocalStore = defineStore(
   'local',
@@ -18,8 +18,9 @@ export const useMainStore = defineStore(
   'main',
   () => {
     // like setup() in a component
-    const data = ref({} as Data)
-    return { data }
+    const logs = ref([] as Log[])
+    const activities = ref([] as Activity[])
+    return { logs, activities }
   },
   {
     sharing: true, // shared through yjs (+ local IDB)
