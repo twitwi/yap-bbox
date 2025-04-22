@@ -1,6 +1,6 @@
 {
-  "name": "create-vue-customized",
-  "version": "0.0.2",
+  "name": "bboxy",
+  "version": "0.0.1",
   "private": true,
   "type": "module",
   "scripts": {
