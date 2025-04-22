@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import router from '@/router'
 import { useMainStore } from '@/stores/simple'
-import { Activity, DUMMY_ACTIVITY, DUMMY_LOG, Log } from '@/typing'
+import { DUMMY_ACTIVITY, DUMMY_LOG, type Activity, type Log } from '@/typing'
 import { useNow } from '@vueuse/core'
 import { computed } from 'vue'
 const main = useMainStore()
 
 const now = useNow({ interval: 500 })
 
-function showTime(t) {
+function showTime(t: number) {
   return new Date(t).toISOString().substring(11, 19)
 }
 

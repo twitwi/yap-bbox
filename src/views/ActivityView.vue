@@ -8,10 +8,11 @@ const props = defineProps({
 
 import router from '@/router'
 import { useMainStore } from '@/stores/simple'
+import { DUMMY_ACTIVITY } from '@/typing'
 import { computed } from 'vue'
 const main = useMainStore()
 const activity = computed(() => {
-  return main.activities.find((a) => a.id === props.activityId)
+  return main.activities.find((a) => a.id === props.activityId) ?? DUMMY_ACTIVITY
 })
 const promptChangeId = () => {
   const newId = prompt('Enter new ID (WARNING CHANGING ID BREAKS LINKS):', activity.value.id)

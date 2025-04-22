@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NButton, NDatePicker, NForm, NFormItem, NInput, NSelect, NSpace } from 'naive-ui'
+import { NButton, NDatePicker, NForm, NFormItem, NInput, NSelect } from 'naive-ui'
 
 const props = defineProps({
   logIndex: {
@@ -11,12 +11,13 @@ const props = defineProps({
 import router from '@/router'
 import { useMainStore } from '@/stores/simple'
 import { computed } from 'vue'
+import { DUMMY_ACTIVITY } from '@/typing'
 const main = useMainStore()
 const log = computed(() => {
   return main.logs[props.logIndex]
 })
 const activity = computed(() => {
-  return main.activities.find((a) => a.id === log.value.activity)
+  return main.activities.find((a) => a.id === log.value.activity) ?? DUMMY_ACTIVITY
 })
 const activityOptions = computed(() => {
   return main.activities.map((a) => ({

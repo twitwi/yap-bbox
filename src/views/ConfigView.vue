@@ -4,6 +4,12 @@ import router from '@/router';
 
 import { useMainStore } from '@/stores/simple'
 const main = useMainStore()
+
+function promptReloadPage() {
+  if (confirm('Are you sure you want to reload the page?')) {
+    location.reload()
+  }
+}
 </script>
 
 <template>
@@ -21,7 +27,7 @@ const main = useMainStore()
     @click="router.push({ name: 'activity', params: { activityId: a.id } })"
     :title="a.name">{{ main.logs.filter((l) => l.activity == a.id).length }}</span></p>
   <h3>More</h3>
-  <button @click="window.location.reload()">Reload</button>
+  <button @click="promptReloadPage()">Reload</button>
 </template>
 
 <style>
