@@ -17,8 +17,9 @@ const logs = computed(() => {
     acc[a.id] = a
     return acc
   }, {} as Record<string, Activity>)
-  return main.logs.map((l) => {
-    return { ...l, original: l, act: aMap[l.activity] }
+
+  return main.logs.map((l, index) => {
+    return { ...l, index, original: l, act: aMap[l.activity] }
   }).reverse()
 })
 
@@ -93,13 +94,13 @@ function clickActivity(a: Activity) {
   <div v-if="showLogs" class="all-logs beforelast-log">
     <div v-for="log in logs" :key="log.start" class="log"
     :style="{ ['--col']: log.act.color }"
-    @click="router.push({ name: 'log', params: { logIndex: main.logs.indexOf(log.original) } })">
+    @click="router.push({ name: 'log', params: { logIndex: log.index } })">
       <div class="time">{{ showTime(logDuration(log)) }}</div>
       <div class="activity">
         <div class="name">{{ log.act.name }}</div>
         <div class="comment">{{ log.comment }}</div>
       </div>
-      <div class="edit" @click.stop="edit(log)">edit</div>
+      <div class="edit" @click.stop="edit(log.original)">edit</div>
     </div>
   </div>
 </template>
