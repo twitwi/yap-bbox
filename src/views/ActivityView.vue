@@ -6,6 +6,7 @@ const props = defineProps({
   },
 })
 
+import BackButton from '@/components/BackButton.vue'
 import router from '@/router'
 import { useMainStore } from '@/stores/simple'
 import { logDuration, showInstant, showTime } from '@/tools'
@@ -35,7 +36,7 @@ const promptChangeId = () => {
 </script>
 
 <template>
-  <button @click="router.go(-1)">Back</button>
+  <BackButton/>
 
   <template v-if="activity">
     <h3>Activity: {{ activity.name }} <span @click="promptChangeId()">{{ activity.id }}</span></h3>

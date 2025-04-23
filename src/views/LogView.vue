@@ -12,6 +12,7 @@ import router from '@/router'
 import { useMainStore } from '@/stores/simple'
 import { computed } from 'vue'
 import { DUMMY_ACTIVITY } from '@/typing'
+import BackButton from '@/components/BackButton.vue'
 const main = useMainStore()
 const log = computed(() => {
   return main.logs[parseInt(props.logIndex)]
@@ -38,7 +39,7 @@ function promptConfirmDelete() {
 </script>
 
 <template>
-  <button @click="router.go(-1)">Back</button>
+  <BackButton/>
 
   <template v-if="log">
     <NForm>
