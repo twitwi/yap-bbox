@@ -1,7 +1,15 @@
 import type { Log } from "./typing"
 
-export function showTime(t: number) {
-  return new Date(t).toISOString().substring(11, 19)
+export function showTime(t: number, simple: boolean = false) {
+  if (simple) {
+    return new Date(t).toISOString().substring(11, 19)
+  } else {
+    t = Math.floor(t / 1000)
+    const h = Math.floor(t / 3600)
+    const m = Math.floor((t % 3600) / 60)
+    const s = Math.floor(t % 60)
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
+  }
 }
 
 export function showInstant(t?: number) {
