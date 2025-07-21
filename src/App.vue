@@ -33,6 +33,10 @@ function bindFor(name: string) {
 </template>
 <style>
 .header {
+  .n-button {
+    font-size: 25px;
+    height: 50px;
+  }
   width: 100%;
   display: flex;
   & > * {
