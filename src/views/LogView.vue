@@ -10,7 +10,7 @@ const props = defineProps({
 
 import router from '@/router'
 import { useMainStore } from '@/stores/simple'
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { DUMMY_ACTIVITY } from '@/typing'
 import BackButton from '@/components/BackButton.vue'
 const main = useMainStore()
@@ -36,6 +36,14 @@ function promptConfirmDelete() {
     router.go(-1)
   }
 }
+
+const focused = ref<HTMLElement | null>(null)
+watch(focused, (el) => {
+  if (el) {
+    el.focus()
+  }
+}, { immediate: true })
+
 </script>
 
 <template>
@@ -57,7 +65,7 @@ function promptConfirmDelete() {
         <NButton v-else @click="log.end.splice(0, log.end.length)" type="error" tertiary>clear end(s)</NButton>
       </NFormItem>
       <NFormItem label="Comment">
-        <NInput type="text" @change="router.go(-1)" v-model:value="log.comment" placeholder="Comment" />
+        <NInput ref="focused" type="text" @change="router.go(-1)" v-model:value="log.comment" placeholder="Comment" />
       </NFormItem>
     </NForm>
     <NButton @click="promptConfirmDelete" type="error">Delete</NButton>
