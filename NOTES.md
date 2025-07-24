@@ -13,4 +13,6 @@ pnpm  build --base /2025-bboxy/
 - [ ] options: no-history mode to have "back" quit the app (seems ok?)
 - [x] focus the comment field
 - [ ] tentative rework with action to enable predictive actions (or based on state?), e.g. suggest adding a typical comment etc
+  - move most functions as store actions
+  - use a logging component, https://pinia.vuejs.org/core-concepts/actions.html#Subscribing-to-actions (where to save that...?)
 
