@@ -82,6 +82,7 @@ const wrapEnd = computed(() => {
         <NInput ref="focused" type="text" @change="router.go(-1)" v-model:value="log.comment" placeholder="Comment" />
       </NFormItem>
     </NForm>
+    <BackButton/>
     <NButton @click="promptConfirmDelete" type="error">Delete</NButton>
   </template>
 </template>
