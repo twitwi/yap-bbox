@@ -6,11 +6,11 @@ export const useLocalStore = defineStore(
   'local',
   () => {
     // like setup() in a component
-    const userName = ref('bob')
-    return { userName }
+    //const userName = ref('bob')
+    return { /*userName*/ }
   },
   {
-    persist: true, // persisted in localStorage
+    persist: { key: 'yap-bbox:local' }, // persisted in localStorage
   },
 )
 
