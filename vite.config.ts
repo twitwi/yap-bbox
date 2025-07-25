@@ -26,9 +26,9 @@ export default defineConfig(({ mode }) => {
           config: true,
         },
         manifest: {
-          name: 'BusyBox yjs',
-          short_name: 'BBoxy',
-          description: 'This is BBoxy',
+          name: 'yap-BBox',
+          short_name: 'yap-bbox',
+          description: 'yap-BBox is a time tracker which is yjs-backed, collaborative, offline-first.',
           theme_color: env.VITE_THEME_HEXCOLOR,
         },
       }),

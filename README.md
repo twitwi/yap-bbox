@@ -1,5 +1,5 @@
-# BBoxy
+# yap-BBox
 
+yap-BBox is a time tracker which is yjs-backed, collaborative, offline-first.
 
-- (#yjs) modifying the LOCAL_STORAGE_KEY in `src/main-yjs.ts` (and/or hardcode the configuration if desired)
-- (#pwa) modifying the informations in `vite.config.ts`
+See also [yap-Applications](/twitwi/yap-applications) for more information and applications.
