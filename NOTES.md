@@ -1,8 +1,8 @@
 
 ~~~
 #build-only
-pnpm  build --base /2025-bboxy/
-@send-to-dl-dir dist 2025-bboxy
+pnpm  build --base /bbox/
+@send-to-dl-dir dist apps/bbox
 ~~~
 
 # TODO
