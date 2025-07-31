@@ -4,11 +4,12 @@ import { useMainStore } from '@/stores/simple'
 import { logDuration, showTime } from '@/tools'
 import { DUMMY_ACTIVITY, DUMMY_LOG, type Activity, type Log } from '@/typing'
 import { useNow } from '@vueuse/core'
-import { NSwitch } from 'naive-ui'
-import { computed, ref } from 'vue'
+import { NButton, NSwitch, useNotification } from 'naive-ui'
+import { computed, h, ref } from 'vue'
 const main = useMainStore()
 
 const now = useNow({ interval: 500 })
+const notification = useNotification()
 
 const showLogs = ref(false)
 const nRawLogs = ref(500)
@@ -57,6 +58,34 @@ function clickActivity(a: Activity) {
     start: Date.now() - 500,
     end: [],
     comment: '',
+  }
+  const options = [... new Set(logs.value.filter(l => l.activity === a.id && l.comment).map(l => l.comment))]
+  if (options.length > 0) {
+    const timeout = setTimeout(() => n.destroy(), 3000)
+    const selectedComment = ref(options[0])
+    const n = notification.success({
+      title: 'Quick-add a comment?',
+      description: 'Based on latest comments for this type of activity.',
+      content: () => h('select', {
+        value: selectedComment.value,
+        onInput: (ev) => selectedComment.value = (ev.target as HTMLSelectElement).value,
+        onClick: () => clearTimeout(timeout),
+      }, options.map(c => h('option', { value: c }, c))),
+      action: () => h(NButton, {
+        disabled: selectedComment.value == '',
+        text: true,
+        type: 'primary',
+        onClick: () => {
+          const lastLog = main.logs.slice(-1)[0]
+          if (lastLog.start !== newLog.start || lastLog.comment !== newLog.comment) {
+            notification.error({ title: 'Log changed in the meantime, aborting.', duration: 3000 })
+            return
+          }
+          lastLog.comment = selectedComment.value
+          n.destroy()
+        }
+      }, { default: () => 'Add' }),
+    })
   }
   main.logs.push(newLog)
 }

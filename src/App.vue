@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import ReloadPrompt from './components/ReloadPrompt.vue'
-import { NButton, NButtonGroup, NConfigProvider, type GlobalThemeOverrides } from 'naive-ui';
+import { NButton, NButtonGroup, NConfigProvider, NNotificationProvider, type GlobalThemeOverrides } from 'naive-ui';
 import router from './router';
 import type { Type } from 'naive-ui/es/button/src/interface';
 import Color from 'colorjs.io';
@@ -36,6 +36,7 @@ const nThemeOverride: GlobalThemeOverrides = {
 
 <template>
   <NConfigProvider :theme-overrides="nThemeOverride">
+   <NNotificationProvider placement="bottom" :max="2">
     <header>
       <NButtonGroup class="header">
         <NButton v-bind="bindFor('home')">Log</NButton>
@@ -46,6 +47,7 @@ const nThemeOverride: GlobalThemeOverrides = {
 
     <RouterView />
     <ReloadPrompt />
+   </NNotificationProvider>
   </NConfigProvider>
 </template>
 <style>
