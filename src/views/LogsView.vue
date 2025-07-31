@@ -11,6 +11,7 @@ const main = useMainStore()
 const now = useNow({ interval: 500 })
 
 const showLogs = ref(false)
+const nRawLogs = ref(500)
 
 const logs = computed(() => {
   const aMap = main.activities.reduce((acc, a) => {
@@ -90,9 +91,9 @@ function clickActivity(a: Activity) {
     </div>
   </div>
 
-  <h3><NSwitch v-model:value="showLogs"></NSwitch><label><input type="checkbox" v-model="showLogs" style="display: none">  All Logs (unpaginated!)</label></h3>
+  <h3><NSwitch v-model:value="showLogs"></NSwitch><label><input type="checkbox" v-model="showLogs" style="display: none">  All Logs (unpaginated! last {{ nRawLogs }})</label></h3>
   <div v-if="showLogs" class="all-logs beforelast-log">
-    <div v-for="log in logs" :key="log.start" class="log"
+    <div v-for="log in logs.slice(0, nRawLogs)" :key="log.start" class="log"
     :style="{ ['--col']: log.act.color }"
     @click="router.push({ name: 'log', params: { logIndex: log.index } })">
       <div class="time">{{ showTime(logDuration(log)) }}</div>
