@@ -7,6 +7,7 @@ pnpm  build --base /bbox/
 
 # TODO
 
+- [ ] allow to select comment from previous ones, also in the edit view (if you missed the popup)
 - [ ] Esc to go back on desktop
 - [x] bigger menu bar
 - [x] better date-time selection

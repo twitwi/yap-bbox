@@ -61,20 +61,27 @@ function clickActivity(a: Activity) {
   }
   const options = [... new Set(logs.value.filter(l => l.activity === a.id && l.comment).map(l => l.comment))]
   if (options.length > 0) {
-    const timeout = setTimeout(() => n.destroy(), 3000)
+    const timeout = setTimeout(() => n.destroy(), 5000)
     const selectedComment = ref(options[0])
+    const clearTimeoutOnEvents = {
+      onClick: () => clearTimeout(timeout), // for mobile?
+      onMousemove: () => clearTimeout(timeout),
+    }
+    const text = (t:string) => () => h('span', clearTimeoutOnEvents, t)
     const n = notification.success({
-      title: 'Quick-add a comment?',
-      description: 'Based on latest comments for this type of activity.',
+      avatar: text('⭐'),
+      title: text('Quick-add a comment?'),
+      description: text('Based on latest comments for this type of activity.'),
       content: () => h('select', {
         value: selectedComment.value,
         onInput: (ev) => selectedComment.value = (ev.target as HTMLSelectElement).value,
-        onClick: () => clearTimeout(timeout),
+        ...clearTimeoutOnEvents,
       }, options.map(c => h('option', { value: c }, c))),
       action: () => h(NButton, {
         disabled: selectedComment.value == '',
         text: true,
         type: 'primary',
+        ...clearTimeoutOnEvents,
         onClick: () => {
           const lastLog = main.logs.slice(-1)[0]
           if (lastLog.start !== newLog.start || lastLog.comment !== newLog.comment) {
@@ -120,7 +127,7 @@ function clickActivity(a: Activity) {
     </div>
   </div>
 
-  <h3><NSwitch v-model:value="showLogs"></NSwitch><label><input type="checkbox" v-model="showLogs" style="display: none">  All Logs (unpaginated! last {{ nRawLogs }})</label></h3>
+  <h3><NSwitch v-model:value="showLogs"></NSwitch><label><input type="checkbox" v-model="showLogs" style="display: none">  All Logs (unpaginated! last {{ Math.min(nRawLogs, main.logs.length) }})</label></h3>
   <div v-if="showLogs" class="all-logs beforelast-log">
     <div v-for="log in logs.slice(0, nRawLogs)" :key="log.start" class="log"
     :style="{ ['--col']: log.act.color }"
