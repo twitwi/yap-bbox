@@ -9,7 +9,7 @@ const props = defineProps({
 import BackButton from '@/components/BackButton.vue'
 import router from '@/router'
 import { useMainStore } from '@/stores/simple'
-import { logDuration, showInstant, showTime } from '@/tools'
+import { epochToNumberOfDays, logDuration, showInstant, showTime } from '@/tools'
 import { DUMMY_ACTIVITY } from '@/typing'
 import { computed } from 'vue'
 const main = useMainStore()
@@ -18,10 +18,18 @@ const activity = computed(() => {
 })
 const logs = computed(() => {
   let total = 0
+  let prevDay = 0 // fake day
   return main.logs.filter((l) => l.activity === activity.value.id).reverse().map((l) => {
     const duration = logDuration(l)
     total += duration
-    return { ...l, original: l, total }
+    const day = epochToNumberOfDays(l.start)
+    if (prevDay == 0) {
+      prevDay = day
+    }
+    const deltaDay = - (day - prevDay) // negative because antichronological order
+    const separator = deltaDay == 0 ? 0 : 1 + Math.log2(deltaDay)
+    prevDay = day
+    return { ...l, original: l, total, separator }
   })
 })
 const promptChangeId = () => {
@@ -50,7 +58,7 @@ const promptChangeId = () => {
     <h3>Logs for {{ activity.name }}</h3>
     <div class="logs">
       <div v-for="log in logs" :key="log.start" class="log"
-      :style="{ ['--col']: activity.color }" @click="router.push({ name: 'log', params: { logIndex: main.logs.indexOf(log.original) } })">
+      :style="{ ['--col']: activity.color, ['--separator']: log.separator }" @click="router.push({ name: 'log', params: { logIndex: main.logs.indexOf(log.original) } })">
         <div class="time">{{ showTime(logDuration(log)) }}</div>
         <div>{{ showInstant(log.start) }}</div>
         <div>{{ showInstant(log.end[0]) }}</div>
@@ -62,6 +70,9 @@ const promptChangeId = () => {
 </template>
 
 <style scoped>
+.log {
+  border-top: calc(var(--separator) * 3px) solid var(--col);
+}
 h3 span {
   font-size: .5em;
   font-family: monospace;
